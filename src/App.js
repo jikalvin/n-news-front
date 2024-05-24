@@ -1,61 +1,61 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from "./firebase";
 import Navbar from './Components/Navbar/Navbar';
 import Home from './Pages/Home';
-import News from '../src/Components/News/News';
-import AdminPanel from './Components/AdminPanel/AdminPanel';
+import News from './Components/News/News';
 import CreateNews from './Components/AdminPanel/CreateNews';
 import EditNews from './Components/AdminPanel/EditNews';
-import Login from './Components/Login/Login';
 import LoadingBar from 'react-top-loading-bar';
 import Footer from './Footer/Footer';
-import SignUpForm from "./Components/Login/Signup";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "./firebase";
 
 function App() {
-  const pageSize = 15;
-  const apiKey = "db82359fc09d47dda02078e9710f0167";
   const [progress, setProgress] = useState(0);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track authentication status
-  const [user, setUser] = useState(null)
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLoggedIn(true);
-        setUser(user)
-        console.log(user)
-      } else {
-        console.log('User signed out');
+    const fetchArticles = async () => {
+      setProgress(30);
+      try {
+        const newsRef = collection(db, 'news');
+        const querySnapshot = await getDocs(newsRef);
+        const fetchedArticles = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setArticles(fetchedArticles);
+        setProgress(100);
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setProgress(100);
+      } finally {
+        setLoading(false);
       }
-    })
+    };
 
-  }, [auth.currentUser, isLoggedIn])
+    fetchArticles();
+  }, []);
+
+  const categorizeArticles = (category) => articles.filter(article => article.category.toLowerCase() === category.toLowerCase());
 
   return (
     <div>
       <Router>
-        <LoadingBar
-          height={3}
-          color='#f11946'
-          progress={progress} />
+        <LoadingBar height={3} color='#f11946' progress={progress} />
         <Navbar />
         <Routes>
-          <Route exact path="/" element={<Home setProgress={setProgress} />} />
-          <Route exact path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
-          <Route exact path="/signup" element={<SignUpForm setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/admin" element={isLoggedIn ? <AdminPanel /> : <Navigate to="/login" />} />
+          <Route exact path="/" element={<Home setProgress={setProgress} articles={articles} loading={loading} />} />
           <Route exact path="/admin/create" element={<CreateNews />} />
           <Route exact path="/admin/edit/:id" element={<EditNews />} />
-          <Route exact path="/business" element={<News setProgress={setProgress} apiKey={apiKey} key="business" pageSize={pageSize} country="in" category="business" />} />
-          <Route exact path="/entertainment" element={<News setProgress={setProgress} apiKey={apiKey} key="entertainment" pageSize={pageSize} country="in" category="entertainment" />} />
-          <Route exact path="/general" element={<News setProgress={setProgress} apiKey={apiKey} key="general" pageSize={pageSize} country="in" category="general" />} />
-          <Route exact path="/health" element={<News setProgress={setProgress} apiKey={apiKey} key="health" pageSize={pageSize} country="in" category="health" />} />
-          <Route exact path="/science" element={<News setProgress={setProgress} apiKey={apiKey} key="science" pageSize={pageSize} country="in" category="science" />} />
-          <Route exact path="/sports" element={<News setProgress={setProgress} apiKey={apiKey} key="sports" pageSize={pageSize} country="in" category="sports" />} />
-          <Route exact path="/technology" element={<News setProgress={setProgress} apiKey={apiKey} key="technology" pageSize={pageSize} country="in" category="technology" />} />
+          <Route exact path="/business" element={<News setProgress={setProgress} articles={categorizeArticles('business')} loading={loading} category="business" />} />
+          <Route exact path="/entertainment" element={<News setProgress={setProgress} articles={categorizeArticles('entertainment')} loading={loading} category="entertainment" />} />
+          <Route exact path="/general" element={<News setProgress={setProgress} articles={categorizeArticles('general')} loading={loading} category="general" />} />
+          <Route exact path="/health" element={<News setProgress={setProgress} articles={categorizeArticles('health')} loading={loading} category="health" />} />
+          <Route exact path="/science" element={<News setProgress={setProgress} articles={categorizeArticles('science')} loading={loading} category="science" />} />
+          <Route exact path="/sports" element={<News setProgress={setProgress} articles={categorizeArticles('sports')} loading={loading} category="sports" />} />
+          <Route exact path="/technology" element={<News setProgress={setProgress} articles={categorizeArticles('technology')} loading={loading} category="technology" />} />
         </Routes>
         <Footer />
       </Router>

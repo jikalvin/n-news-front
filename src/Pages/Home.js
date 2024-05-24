@@ -12,7 +12,7 @@ import VidioCard1 from '../Components/Cards/VidioCard1'
 
 
 
-export default function Home() {
+export default function Home({ articles }) {
     return (
         <div>
             {/* <Slider /> */}

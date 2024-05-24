@@ -4,7 +4,10 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 export default function News() {
-    const [newsArticles, setNewsArticles] = useState(null);
+    const [newsArticles, setNewsArticles] = useState([{
+        coverImage: "",
+        title: "",
+    }]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -60,7 +63,7 @@ export default function News() {
                     {newsArticles && newsArticles.map((article, index) => {
                         return (
                             <div className=' mid-1 flex margin border'>
-                                <img src={article.coverImage} alt={article.coverImage} width={'50%'} />
+                                <img src={article.coverImage} alt={article.title} width={'50%'} />
                                 <p className='cl'>{article.title}</p>
                             </div>
                         )
