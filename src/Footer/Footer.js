@@ -60,9 +60,9 @@ export default function Footer() {
                         </div>
                         <div className="row">
                             <div className="col-md-12 copy">
-                                <p className="text-center">&copy; Copyright 2024 - Company Name.  All rights reserved.
+                                <p className="text-center">&copy; Copyright 2024 - N News.  All rights reserved.
                                     <br />
-                                    Made  by ❤️ by Shahmeer Rizwan
+                                    Made  with ❤️ 
                                 </p>
                             </div>
                         </div>
