@@ -12,7 +12,7 @@ const News = (props) => {
 
     return (
         <div>
-            <h1 className='text-center'>Latest News On {capitalizeFirstLetter(category)} - MSR News</h1>
+            <h1 className='text-center'>{capitalizeFirstLetter(category)} - M News</h1>
             {loading && <Spinner />}
 
             <div className='containerr'>
@@ -24,7 +24,7 @@ const News = (props) => {
                         imageUrl={element.coverImage}
                         newsUrl={`#`} // Placeholder, update this if you have a news detail page
                         author={element.author}
-                        date={element.publishedAt}
+                        date={element.createdAt}
                         source={element.source}
                     />
                 ))}

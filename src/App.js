@@ -5,10 +5,10 @@ import { db } from "./firebase";
 import Navbar from './Components/Navbar/Navbar';
 import Home from './Pages/Home';
 import News from './Components/News/News';
-import CreateNews from './Components/AdminPanel/CreateNews';
-import EditNews from './Components/AdminPanel/EditNews';
 import LoadingBar from 'react-top-loading-bar';
 import Footer from './Footer/Footer';
+import ArticleDetail from "./Pages/ArticleDetail";
+import LoadingScreen from "./Components/AnimatedLogo";
 
 function App() {
   const [progress, setProgress] = useState(0);
@@ -40,6 +40,10 @@ function App() {
 
   const categorizeArticles = (category) => articles.filter(article => article.category.toLowerCase() === category.toLowerCase());
 
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div>
       <Router>
@@ -47,8 +51,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route exact path="/" element={<Home setProgress={setProgress} articles={articles} loading={loading} />} />
-          <Route exact path="/admin/create" element={<CreateNews />} />
-          <Route exact path="/admin/edit/:id" element={<EditNews />} />
+          <Route path="/article/:id" element={<ArticleDetail articles={articles} />} />
           <Route exact path="/business" element={<News setProgress={setProgress} articles={categorizeArticles('business')} loading={loading} category="business" />} />
           <Route exact path="/entertainment" element={<News setProgress={setProgress} articles={categorizeArticles('entertainment')} loading={loading} category="entertainment" />} />
           <Route exact path="/general" element={<News setProgress={setProgress} articles={categorizeArticles('general')} loading={loading} category="general" />} />

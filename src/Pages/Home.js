@@ -1,37 +1,35 @@
 import SideBar from '../Components/Sidebar/SideBar'
-import Slider from '../Components/Slider/Slider'
 import NewsComponent1 from '../Components/NewsComponents/NewsComponent1'
 import Card from '../Components/Cards/Card'
-import Card1 from '../Components/Cards/Card1'
-import Card2 from '../Components/Cards/Card2'
+import LatestNews from '../Components/Cards/Card1'
+import Slider from '../Components/Cards/Card2'
 import BreakLine from '../BreakLine/BreakLine'
-import Card3 from '../Components/Cards/Card3'
+import CurrentNews from '../Components/Cards/Card3'
 import VidioCard from '../Components/Cards/VidioCard'
-import Card4 from '../Components/Cards/Card4'
+import DetailedLatestNews from '../Components/Cards/Card4'
 import VidioCard1 from '../Components/Cards/VidioCard1'
 
-
-
 export default function Home({ articles }) {
+    const latestArticle = articles.length > 0 ? articles[0] : null;
+
     return (
         <div>
-            {/* <Slider /> */}
-            <NewsComponent1 />
+            <NewsComponent1 articles={articles} />
             <BreakLine />
-            <Card1 />
+            <LatestNews article={latestArticle} />
             <BreakLine />
-            <Card2 />
+            <Slider />
             <BreakLine />
             <br />
             <VidioCard />
-            <Card3 />
+            {/* <CurrentNews /> */}
             <BreakLine />
             <Card />
             <BreakLine />
-            <Card4 />
-            <BreakLine />
-            <VidioCard1 />
-            <SideBar />
+            <DetailedLatestNews />
+            {/* <BreakLine /> */}
+            {/* <VidioCard1 /> */}
+            {/* <SideBar /> */}
         </div>
     )
 }
